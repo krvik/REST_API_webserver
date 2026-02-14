@@ -1,0 +1,267 @@
+{
+  "info": {
+    "name": "Students API (Flask) \u2014 Versioned CRUD",
+    "description": "Postman collection for legacy (/students), v1 (/api/v1/students), and v2 (/api/v2/students) endpoints of the Students API. Collection endpoints require a trailing slash.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000"
+    },
+    {
+      "key": "studentId",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/health"
+      }
+    },
+    {
+      "name": "Legacy (/students)",
+      "item": [
+        {
+          "name": "List students (legacy)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/students/"
+          }
+        },
+        {
+          "name": "Create student (legacy)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Legacy User\",\n  \"age\": 20,\n  \"course\": \"Math\"\n}"
+            },
+            "url": "{{baseUrl}}/students/"
+          }
+        },
+        {
+          "name": "Get student by id (legacy)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/students/{{studentId}}"
+          }
+        },
+        {
+          "name": "Replace student (PUT, legacy)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Legacy New\",\n  \"age\": 21,\n  \"course\": \"AI\"\n}"
+            },
+            "url": "{{baseUrl}}/students/{{studentId}}"
+          }
+        },
+        {
+          "name": "Modify student (PATCH, legacy)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"age\": 22\n}"
+            },
+            "url": "{{baseUrl}}/students/{{studentId}}"
+          }
+        },
+        {
+          "name": "Delete student (legacy)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/students/{{studentId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "API v1 (/api/v1/students)",
+      "item": [
+        {
+          "name": "List students (v1)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/v1/students/"
+          }
+        },
+        {
+          "name": "Create student (v1)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"V1 User\",\n  \"age\": 20,\n  \"course\": \"Math\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/students/"
+          }
+        },
+        {
+          "name": "Get student by id (v1)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/v1/students/{{studentId}}"
+          }
+        },
+        {
+          "name": "Replace student (PUT, v1)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"V1 New\",\n  \"age\": 23,\n  \"course\": \"AI\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/students/{{studentId}}"
+          }
+        },
+        {
+          "name": "Modify student (PATCH, v1)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"age\": 24\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/students/{{studentId}}"
+          }
+        },
+        {
+          "name": "Delete student (v1)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/api/v1/students/{{studentId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "API v2 (/api/v2/students)",
+      "item": [
+        {
+          "name": "List students (v2)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/v2/students/"
+          }
+        },
+        {
+          "name": "Create student (v2)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"V2 User\",\n  \"age\": 21,\n  \"course\": \"CS\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v2/students/"
+          }
+        },
+        {
+          "name": "Get student by id (v2)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/v2/students/{{studentId}}"
+          }
+        },
+        {
+          "name": "Replace student (PUT, v2)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"V2 New\",\n  \"age\": 22,\n  \"course\": \"AI\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v2/students/{{studentId}}"
+          }
+        },
+        {
+          "name": "Modify student (PATCH, v2)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"age\": 23\n}"
+            },
+            "url": "{{baseUrl}}/api/v2/students/{{studentId}}"
+          }
+        },
+        {
+          "name": "Delete student (v2)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/api/v2/students/{{studentId}}"
+          }
+        }
+      ]
+    }
+  ]
+}
