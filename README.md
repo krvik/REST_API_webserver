@@ -1,10 +1,8 @@
+# To view it correct, open README.md file in edit mode.
+-------------------------------------------------------
 # REST_API_webserver
 Repo contains, a simple REST API webserver where CRUD operation (Create, Read (all, by id), Update (all fields, some fields), and deletion of records performed. Also Health check and versioning of API.
 ----------------------------------------------------------------------------------------------------
-# Create venv and install requirements
-python -m venv venv
-.\venv\Scripts\Activate.ps1
-pip install -r requirements.txt
 
 # Start the API
 python .\app.py
@@ -16,6 +14,11 @@ Invoke-RestMethod http://localhost:5000/health
 
 
 # Running Tests
+----------------------------
+# Create venv and install requirements
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+pip install -r requirements.txt
 pytest -q
 ![alt text](image.png)
 
