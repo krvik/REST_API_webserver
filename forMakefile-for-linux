@@ -1,0 +1,27 @@
+# No tested 
+
+PYTHON= python3
+APP= app.py
+VENV= venv
+PIP= $(VENV)/bin/pip
+PY= $(VENV)/bin/python
+
+
+.PONY: venv install run clean
+
+#create virtual env
+venv:
+	$(PYTHON)-m venv $(VENV)
+
+# install  dependencies
+install:
+	$(PIP) install -r requirements.txt
+	
+
+#run the application
+run:
+	$(PY) $(APP)
+
+# clean python canche files
+clean:
+	rm -rf $(VENV) __pycache__
