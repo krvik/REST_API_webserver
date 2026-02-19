@@ -11,7 +11,7 @@ PY= $(VENV)/bin/python
 
 #create virtual env
 venv:
-	$(PYTHON)-m venv $(VENV)
+	$(PYTHON) -m venv $(VENV)
 
 # install  dependencies
 install:

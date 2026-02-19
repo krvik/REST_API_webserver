@@ -1,0 +1,21 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY requirements.txt ./
+RUN pip install -r requirements.txt
+
+#copy all  files/folders to image
+# to avoid this, explicitly copy each file as below. or create  .dockerignore file.
+#COPY . .  
+
+COPY app.py ./
+COPY extensions.py  ./
+COPY Makefile  ./
+COPY models.py ./
+COPY requirements.txt ./
+COPY routes.py  ./
+
+EXPOSE 5000
+
+CMD ["python", "app.py"]

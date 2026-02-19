@@ -1,36 +1,62 @@
-# Windows friendly Makefile
+APP_NAME = rest_api_app
+VERSION ?= 1.0.0
+REGISTRY = docker.io/vikashkumardev1996
 
-# Force GNU make to use Windows Command Prompt
-SHELL:=cmd.exe
-.SHELLFLAGS:=/Q/C
 
-# Config windows path--------
-PYTHON:= python3
+# -----------------------------
+# Build Docker Image
+# -----------------------------
+# Usage:
+#   make build VERSION=1.2.0
+build:
+	docker build -t $(APP_NAME):$(VERSION) .
 
-VENV:= venv
-PIP:= $(VENV)\Scripts\pip.exe
-PY:= $(VENV)\Scripts\python.exe
-APP:= app.py
-TEST_FILE := test_students_api.py
 
-.PONY: venv install  test run clean
-
-#create virtual env
-venv:
-	$(PYTHON) -m venv $(VENV)
-
-# install  dependencies
-install:
-	$(PIP) install -r requirements.txt
-
-# execute test	
-test:
-	$(PY) -m pytest $(TEST_FILE) -q 
-
-#run the application
+# -----------------------------
+# Run the App in Docker
+# -----------------------------
+# Usage:
+#   make run VERSION=1.2.0
+# This will start the app on http://localhost:5000
 run:
-	$(PY) $(APP)
+	docker run --rm -p 5000:5000 \
+		-e APP_ENV=dev \
+		-e LOG_LEVEL=DEBUG \
+		$(APP_NAME):$(VERSION)
 
-# clean python canche files
+
+# -----------------------------
+# Tag the Image (SemVer Tagging)
+# -----------------------------
+# Usage:
+#   make tag VERSION=1.2.0
+tag:
+	docker tag $(APP_NAME):$(VERSION) $(REGISTRY)/$(APP_NAME):$(VERSION)
+	docker tag $(APP_NAME):$(VERSION) $(REGISTRY)/$(APP_NAME):latest
+
+
+# -----------------------------
+# Push to Docker Hub
+# -----------------------------
+push:
+	docker push $(REGISTRY)/$(APP_NAME):$(VERSION)
+	docker push $(REGISTRY)/$(APP_NAME):latest
+
+
+# -----------------------------
+# Clean Local Images
+# -----------------------------
 clean:
-	@if exist "$(VENV)" rmdir /S /Q "$(VENV)"
+	docker rmi $(APP_NAME):$(VERSION) || true
+	docker rmi $(REGISTRY)/$(APP_NAME):$(VERSION) || true
+
+
+# -----------------------------
+# Help Menu
+# -----------------------------
+help:
+	@echo "make build         - Build Docker image"
+	@echo "make run           - Run app locally"
+	@echo "make tag VERSION=x - Tag image using semver"
+	@echo "make push          - Push to Docker Hub"
+	@echo "make clean         - Remove local images"

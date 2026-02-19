@@ -1,0 +1,36 @@
+# Windows friendly Makefile
+
+# Force GNU make to use Windows Command Prompt
+SHELL:=cmd.exe
+.SHELLFLAGS:=/Q/C
+
+# Config windows path--------
+PYTHON:= python3
+
+VENV:= venv
+PIP:= $(VENV)\Scripts\pip.exe
+PY:= $(VENV)\Scripts\python.exe
+APP:= app.py
+TEST_FILE := test_students_api.py
+
+.PONY: venv install  test run clean
+
+#create virtual env
+venv:
+	$(PYTHON) -m venv $(VENV)
+
+# install  dependencies
+install:
+	$(PIP) install -r requirements.txt
+
+# execute test	
+test:
+	$(PY) -m pytest $(TEST_FILE) -q 
+
+#run the application
+run:
+	$(PY) $(APP)
+
+# clean python canche files
+clean:
+	@if exist "$(VENV)" rmdir /S /Q "$(VENV)"
