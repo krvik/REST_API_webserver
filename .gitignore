@@ -5,5 +5,9 @@
 
 # db file
 students.db
-__pycache__
+__pycache__/
 *.json
+*pyc
+instance/
+.pytest_cache/
+*.swp
