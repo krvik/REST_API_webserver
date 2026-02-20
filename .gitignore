@@ -1,13 +1,168 @@
-# screenshot files
-*.png
-.pytest_cache
+Creating simple REST-api
+1.	Filename app.py
+from flask import Flask, request, jsonify
+app=Flask(__name__)
+
+@app.route('/')
+def home():
+    return jsonify({"message": "Hello, this is REST API"})
+
+@app.route('/user/<id>')
+def user(id):
+    return jsonify({"userid": id})
+
+@app.route('/data', methods=['POST'])
+def data():
+    return jsonify({
+        "message": "Data received",
+        "data": request.json
+    })
+
+if __name__=='__main__':
+    app.run(port=3000, debug=True)
+
+2.	Run in browser 
+-	http://localhost:3000/
+ 
 
 
-# db file
-students.db
-__pycache__/
-*.json
-*pyc
-instance/
-.pytest_cache/
-*.swp
+
+
+-	http://localhost:3000/user/123
+ 
+
+-	Open another terminal and enter 
+Invoke-RestMethod -Uri " http://localhost:3000/data" -Method POST -ContentType "application/json" -Body '{"name":"vikash"}'
+ 
+
+2, Create REST api with all CRUD operations.
+2.1.	Installed library flask_alchemy
+2.2.	Created and run file app_CRUD.py.
+2.3.	Start entering data
+2.3.1.	$body = @{ name = "Vikash Kumar"; age = 22; email = "vikash@example.com" } | ConvertTo-Json
+2.3.2.	Invoke-RestMethod -Uri "http://localhost:3000/students" -Method POST -ContentType "application/json" -Body $body
+ 
+2.3.3.	$body = @{ name = "Sam  kumar"; age = 45; email = "sam@example.com" } | ConvertTo-Json
+2.3.4.	Invoke-RestMethod -Uri "http://localhost:3000/students" -Method POST -ContentType "application/json" -Body $body
+
+2.4.	Get  All data
+ 
+
+2.5.	Get by id
+ 
+
+2.6.	Update(PUT)
+$update = @{ name = "Vikash K"; age = 23; email = "vikash.k@example.com" } | ConvertTo-Json
+Invoke-RestMethod -Uri "http://localhost:3000/students/1" -Method PUT -ContentType "application/json" -Body $update
+
+ 
+
+2.7.	Partial update(PATCH)
+$patch = @{ age = 24 } | ConvertTo-Json
+Invoke-RestMethod -Uri "http://localhost:3000/students/1" -Method PATCH -ContentType "application/json" -Body $patch
+ 
+
+2.8.	Invoke-RestMethod -Uri "http://localhost:3000/students/1" -Method DELETE
+
+
+3.	Add using curl:
+3.1.	curl.exe -X POST http://localhost:3000/students -H "Content-Type: application/json" -d '{"name":"Ronit", "age": 34, "email": "rohan@gmail.com"}'
+
+3.2.	Get All
+Curl .exe http://localhost:3000/students
+ 
+
+
+Update: curl -X PUT http://localhost:3000/students/1 \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Vikash K","age":23,"email":"vikash.k@example.com"}'
+
+
+
+# Partial update (PATCH)
+curl -X PATCH http://localhost:3000/students/1 \
+  -H "Content-Type: application/json" \
+  -d '{"age":24}
+
+#delete
+
+ 
+
+
+How to run make file.
+1.	Name of makefile should be  Makefile in same folder as app and requirement file.
+2.	Its static file to install, run and clean app in venv. All info are written in Makefile
+2.1.	Create venv
+make venv
+2.2.	Need to install make first
+3.	---------
+
+
+Versioning of API ---------------code are at REST-API-WEBSERVER-2 folder
+
+
+
+ 
+
+
+Healthcheck:
+def health():
+    try:
+        db.session.execute(db.select(Student).limit(1))  # Test DB connectivity
+        return {
+            "status": "ok",
+            "database": "connected",
+            "version": "v1"
+        }, 200
+    except Exception as e:
+        return {
+            "status": "error",
+            "database": "disconnected",
+            "details": str(e)
+        }, 500
+ 
+
+To add unit test for all endpoints.
+-	Install testing dependency
+-	pip install pytest pytest-cov
+
+
+Tsting :
+1.	If no virtual env creatd, create one.
+-	python -m venv venv
+-	.\venv\Scripts\Activate.ps1---------initiate v-env
+2.	Install pytest---pip install pytest, check pytest --version
+
+3.Make sure folder struct is:
+
+
+
+ 
+
+
+Error: 
+PS C:\Users\vikashk2\vs_ws\REST_API_webserver> make install
+venv/bin/pip install -r requirements.txt
+process_begin: CreateProcess(NULL, venv/bin/pip install -r requirements.txt, ...) failed.
+make (e=2): The system cannot find the file specified.
+make: *** [Makefile:16: install] Error 2
+PS C:\Users\vikashk2\vs_ws\REST_API_webserver>
+
+Reason:
+The error make (e=2): The system cannot find the file specified occurs because you are running a Makefile designed for Linux/macOS on Windows PowerShell. 
+Specifically, the line venv/bin/pip does not exist on Windows; Python virtual environments on Windows use Scripts instead of bin
+
+Solution: 
+Replace----------
+install:
+	venv/bin/pip install "-r" requirements.txt 
+---------------to -----------
+install:
+	venv\Scripts\pip install "-r" requirements.txt
+ and some similar tweaks.
+
+Error:
+PS C:\Users\vikashk2\vs_ws\REST_API_webserver> make install venv/Scripts/pip.exe install -r requirements.txt 'venv' is not recognized as an internal or external command, operable program or batch file. make: *** [Makefile:23: install] Error 1 PS C:\Users\vikashk2\vs_ws\REST_API_webserver>
+Reason: venv/Scripts/pip.exe
+Solution: replace / with \ as its windows.
+
