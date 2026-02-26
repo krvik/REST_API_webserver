@@ -2,6 +2,7 @@ import pytest
 from app import create_app
 from extensions import db
 
+
 @pytest.fixture
 def client():
     app = create_app()
@@ -39,8 +40,14 @@ def test_create_student(client):
 # TEST: Get All Students (GET /students/)
 # ---------------------------------------
 def test_list_students(client):
-    client.post("/students/", json={"name": "A", "age": 21, "course": "CS"})
-    client.post("/students/", json={"name": "B", "age": 22, "course": "IT"})
+    client.post(
+        "/students/",
+        json={"name": "A", "age": 21, "course": "CS"}
+    )
+    client.post(
+        "/students/",
+        json={"name": "B", "age": 22, "course": "IT"}
+    )
 
     res = client.get("/students/")
     assert res.status_code == 200
@@ -53,7 +60,11 @@ def test_list_students(client):
 # TEST: Get Student by ID (GET /students/<id>)
 # ---------------------------------------
 def test_get_student(client):
-    created = client.post("/students/", json={"name": "Jane", "age": 19, "course": "EE"}).get_json()
+    created = client.post(
+        "/students/",
+        json={"name": "Jane", "age": 19, "course": "EE"}
+    ).get_json()
+
     sid = created["id"]
 
     res = client.get(f"/students/{sid}")
@@ -65,11 +76,23 @@ def test_get_student(client):
 # TEST: Update Student (PUT /students/<id>)
 # ---------------------------------------
 def test_update_student(client):
-    created = client.post("/students/", json={"name": "Old", "age": 30, "course": "Bio"}).get_json()
+    created = client.post(
+        "/students/",
+        json={"name": "Old", "age": 30, "course": "Bio"}
+    ).get_json()
+
     sid = created["id"]
 
-    update_body = {"name": "New", "age": 25, "course": "AI"}
-    res = client.put(f"/students/{sid}", json=update_body)
+    update_body = {
+        "name": "New",
+        "age": 25,
+        "course": "AI"
+    }
+
+    res = client.put(
+        f"/students/{sid}",
+        json=update_body
+    )
 
     assert res.status_code == 200
     data = res.get_json()
@@ -81,10 +104,18 @@ def test_update_student(client):
 # TEST: Partial Update (PATCH /students/<id>)
 # ---------------------------------------
 def test_patch_student(client):
-    created = client.post("/students/", json={"name": "Patch", "age": 23, "course": "EE"}).get_json()
+    created = client.post(
+        "/students/",
+        json={"name": "Patch", "age": 23, "course": "EE"}
+    ).get_json()
+
     sid = created["id"]
 
-    res = client.patch(f"/students/{sid}", json={"age": 24})
+    res = client.patch(
+        f"/students/{sid}",
+        json={"age": 24}
+    )
+
     assert res.status_code == 200
     assert res.get_json()["age"] == 24
 
@@ -93,7 +124,11 @@ def test_patch_student(client):
 # TEST: Delete Student (DELETE /students/<id>)
 # ---------------------------------------
 def test_delete_student(client):
-    created = client.post("/students/", json={"name": "Del", "age": 28, "course": "CE"}).get_json()
+    created = client.post(
+        "/students/",
+        json={"name": "Del", "age": 28, "course": "CE"}
+    ).get_json()
+
     sid = created["id"]
 
     res = client.delete(f"/students/{sid}")
@@ -102,3 +137,4 @@ def test_delete_student(client):
     # Verify deleted
     res = client.get(f"/students/{sid}")
     assert res.status_code == 404
+
