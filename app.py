@@ -11,7 +11,7 @@ def create_app():
     # Only set DB URI if DATABASE_URL actually exists AND tests didn't set it
     env_db = os.getenv("DATABASE_URL")
     if env_db:
-        app.config.setdefault("SQLALCHEMY_DATABASE_URI", env_db)
+        app.config.setdefault("SQLALCHEMY_DATABASE_URI", "sqlite:///:memory:")
 
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.init_app(app)
