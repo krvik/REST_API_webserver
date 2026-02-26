@@ -12,7 +12,7 @@ def create_app():
     env_db = os.getenv("DATABASE_URL")
     if env_db:
         app.config.setdefault("SQLALCHEMY_DATABASE_URI", env_db)
-        
+
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.init_app(app)
 
