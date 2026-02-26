@@ -17,4 +17,3 @@ class Student(db.Model):
             "course": self.course,
             "created_at": self.created_at.isoformat()
         }
-

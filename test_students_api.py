@@ -137,4 +137,3 @@ def test_delete_student(client):
     # Verify deleted
     res = client.get(f"/students/{sid}")
     assert res.status_code == 404
-

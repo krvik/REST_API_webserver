@@ -17,7 +17,7 @@ def create_blueprint(name, version=None):
         d = request.get_json() or {}
         try:
             age = int(d.get("age"))
-        except:
+        except Exception:
             return {"error": "age must be integer"}, 400
 
         if age < 0:
@@ -84,4 +84,3 @@ def create_blueprint(name, version=None):
 students_v1 = create_blueprint("students_v1")
 students_v2 = create_blueprint("students_v2", version="v2")
 students_legacy = create_blueprint("students_legacy")   # old /students/ route
-
