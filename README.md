@@ -145,4 +145,4 @@ docker run --rm -p 5000:5000 --env-file .env myimage:latest     # run this way
 
 
 # to run docker-compose
-sudo docker-compose up --build
+sudo docker-compose up --build   #sudo is not necessary

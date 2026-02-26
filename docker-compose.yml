@@ -6,12 +6,27 @@ services:
     build: .
     ports:
       - "5000:5000"
-    volumes:
-      - .:/app
-      - sqlite_data:/app/students.db
     environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/students_db
       FLASK_ENV: development
-    command: python app.py
+    depends_on:
+      - db
+
+
+  
+  db:
+      image: postgres:15
+      container_name: rest_api_db
+      restart: always
+      environment:
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: postgres
+        POSTGRES_DB: students_db
+      ports:
+        - "5432:5432"
+      volumes:
+        - pgdata:/var/lib/postgresql/data
+
 
 volumes:
-  sqlite_data:
+  pgdata:
