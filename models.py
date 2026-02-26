@@ -1,6 +1,7 @@
 from datetime import datetime
 from extensions import db
 
+
 class Student(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
@@ -16,3 +17,4 @@ class Student(db.Model):
             "course": self.course,
             "created_at": self.created_at.isoformat()
         }
+

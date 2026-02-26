@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 from extensions import db
 from models import Student
 
+
 def create_blueprint(name, version=None):
     bp = Blueprint(name, __name__)
 
@@ -78,7 +79,9 @@ def create_blueprint(name, version=None):
 
     return bp
 
+
 # Create blueprints
 students_v1 = create_blueprint("students_v1")
 students_v2 = create_blueprint("students_v2", version="v2")
 students_legacy = create_blueprint("students_legacy")   # old /students/ route
+
