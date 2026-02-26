@@ -6,20 +6,20 @@ import os
 
 def create_app():
     app = Flask(__name__)
-#    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///students.db"
-# allow tests to override the URI
-    if not app.config.get("SQLALCHEMY_DATABASE_URI"):
-        app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
+
+    # DO NOT override DB during tests
+    # Only set DB URI if DATABASE_URL actually exists AND tests didn't set it
+    env_db = os.getenv("DATABASE_URL")
+    if env_db:
+        app.config.setdefault("SQLALCHEMY_DATABASE_URI", env_db)
 
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
     db.init_app(app)
 
-    # Versioned
+    # Register routes
     app.register_blueprint(students_v1, url_prefix="/api/v1/students")
     app.register_blueprint(students_v2, url_prefix="/api/v2/students")
-
-    # Backward compatibility
     app.register_blueprint(students_legacy, url_prefix="/students")
 
     @app.get("/health")
@@ -30,4 +30,7 @@ def create_app():
 
 
 if __name__ == "__main__":
-    create_app().run(host="0.0.0.0", port=5000, debug=True)
+    app = create_app()
+    with app.app_context():
+        db.create_all()
+    app.run(host="0.0.0.0", port=5000, debug=True)
