@@ -8,7 +8,7 @@ on:
 jobs:
   lint:
     name: Lint Code
-    runs-on: [self-hosted, linux, x64]   # fixed casing
+    runs-on: [self-hosted]   # fixed casing
     steps:
       - uses: actions/checkout@v4
 
@@ -33,7 +33,7 @@ jobs:
 
   tests:
     name: Run Tests
-    runs-on: [self-hosted, linux, x64]
+    runs-on: [self-hosted]
     needs: lint
     steps:
       - uses: actions/checkout@v4
@@ -55,7 +55,7 @@ jobs:
 
   build:
     name: Build API Image
-    runs-on: [self-hosted, linux, x64]
+    runs-on: [self-hosted]
     needs: tests
     steps:
       - uses: actions/checkout@v4
