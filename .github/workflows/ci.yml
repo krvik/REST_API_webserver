@@ -8,7 +8,7 @@ jobs:
   lint:
     name: Lint Code
 #    runs-on: ubuntu-latest
-    runs-on: [self-hosted, linux]
+    runs-on: [self-hosted, Linux, X64]
     steps:
       - uses: actions/checkout@v4
 
@@ -27,7 +27,7 @@ jobs:
 
   tests:
     name: Run Tests
-    runs-on: [self-hosted, linux] #ubuntu-latest
+    runs-on: [self-hosted, Linux, X64] #ubuntu-latest
     needs: lint
 
     steps:
@@ -48,7 +48,7 @@ jobs:
 
   build:
     name: Build API Image
-    runs-on: [self-hosted, linux] #ubuntu-latest
+    runs-on: [self-hosted, Linux, X64] #ubuntu-latest
     needs: tests
 
     steps:
