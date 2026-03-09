@@ -129,6 +129,6 @@ jobs:
 
       - name: Build & push image
         run: |
-          IMAGE="${ secrets.DOCKER_USERNAME/rest_api_webserver}:latest"
+          IMAGE="${{ secrets.DOCKER_USERNAME }}/rest_api_webserver:latest"
           docker build -t "$IMAGE" .
           docker push "$IMAGE"
