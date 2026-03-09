@@ -1,4 +1,4 @@
-name: Simple CI (Self-hosted, code-only)
+name: Self Hosted CI
 
 on:
   push:
