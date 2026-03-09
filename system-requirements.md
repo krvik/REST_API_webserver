@@ -15,7 +15,7 @@ docker compose version
 sudo yum install make -y
 make --version
 
-4. Git
+4. Git 
 git --version
 sudo yum install git -y
 

@@ -27,7 +27,7 @@ jobs:
 
   tests:
     name: Run Tests
-    runs-on: [self-hosted]
+    runs-on: [self-hosted] #ubuntu-latest
     needs: lint
 
     steps:
@@ -48,7 +48,7 @@ jobs:
 
   build:
     name: Build API Image
-    runs-on: [self-hosted]
+    runs-on: [self-hosted] #ubuntu-latest
     needs: tests
 
     steps:
