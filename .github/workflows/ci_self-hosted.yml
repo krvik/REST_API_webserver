@@ -2,9 +2,9 @@ name: Self Hosted CI  #name of workflow
 
 on:
   push:
-    paths: ['code/**']          # Run only when something under code/ changes
+    paths: ['REST_API_webserver/**']          # Run only when something under code/ changes
   pull_request:
-    paths: ['code/**']
+    paths: ['REST_API_webserver/**']
 
 jobs:
   build:
