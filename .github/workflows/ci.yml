@@ -3,57 +3,31 @@ name: Simple CI Pipeline
 on:
   push:
   pull_request:
-  workflow_dispatch:
 
 jobs:
   lint:
-    name: Lint Code
-    runs-on: [self-hosted]
+    runs-on: self-hosted
+    container:
+      image: python:3.10-slim   # exact version you want
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-          cache: 'pip'
-
-      - name: Install dependencies
-        run: |
+      - run: |
+          python -V
           python -m pip install --upgrade pip
-          python -m pip install -r requirements.txt
-          python -m pip install flake8
-
-      - name: Run linting
-        run: flake8 .
+          pip install -r requirements.txt
+          pip install flake8
+      - run: flake8 .
 
   tests:
-    name: Run Tests
-    runs-on: [self-hosted]
+    runs-on: self-hosted
+    container:
+      image: python:3.10-slim
     needs: lint
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-          cache: 'pip'
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
+      - run: |
+          python -V
           python -m pip install -r requirements.txt
-          python -m pip install pytest
+          pip install pytest
+      - run: pytest -q
 
-      - name: Run tests
-        run: pytest -q
-
-  build:
-    name: Build API Image
-    runs-on: [self-hosted]
-    needs: tests
-    steps:
-      - uses: actions/checkout@v4
-      - name: Build API Docker image using Makefile
-        run: make build
