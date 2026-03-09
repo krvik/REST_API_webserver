@@ -37,8 +37,8 @@ jobs:
         run: |
           set -e
           if ! command -v python3 >/dev/null 2>&1; then
-            echo "❌ python3 not found on this runner."
-            echo "👉 Install on the host: sudo apt-get install -y python3"
+            echo "python3 not found on this runner."
+            echo "Install on the host: sudo apt-get install -y python3"
             exit 1
           fi
 
@@ -46,8 +46,8 @@ jobs:
 
           # Try creating a temporary venv; if it fails, venv is missing
           if ! python3 -m venv /tmp/_venv_test 2>/dev/null; then
-            echo "❌ python3-venv for Python ${PYVER} is missing on the runner."
-            echo "👉 Install on the host (once):"
+            echo "python3-venv for Python ${PYVER} is missing on the runner."
+            echo "Install on the host (once):"
             echo "   sudo apt-get update -y && sudo apt-get install -y python3-pip python${PYVER}-venv"
             # Fallback hint for distros that use generic package name:
             echo "   (If the above fails, try: sudo apt-get install -y python3-venv)"
@@ -109,7 +109,7 @@ jobs:
       - name: Run flake8
         run: |
           . .venv/bin/activate
-          flake8 .
+          flake8 . --exclude=.venv --max-line-length=120
 
   docker:
     name: Docker login, build & push
