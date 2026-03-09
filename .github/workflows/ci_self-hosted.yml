@@ -1,6 +1,6 @@
 name: Self Hosted CI
 
-# 🔧 CHANGED: Added defaults to ensure a consistent shell on self-hosted runners
+# Use bash consistently on self-hosted runners
 defaults:
   run:
     shell: bash
@@ -15,7 +15,7 @@ on:
 jobs:
   ping:
     name: Ping self-hosted runner
-    runs-on: self-hosted   # (kept loose to avoid idle due to label mismatch)
+    runs-on: self-hosted
     steps:
       - run: |
           echo "OS=${RUNNER_OS} ARCH=${RUNNER_ARCH}"
@@ -32,38 +32,44 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # 🔧 CHANGED: Preflight check for python3 and venv (fail fast with clear message)
+      # Preflight: verify python3 and venv are available on the runner
       - name: Preflight - python3/venv availability
         run: |
           set -e
           if ! command -v python3 >/dev/null 2>&1; then
-            echo "python3 not found on runner. Install it on the host: sudo apt-get install -y python3"
+            echo "❌ python3 not found on this runner."
+            echo "👉 Install on the host: sudo apt-get install -y python3"
             exit 1
           fi
-          PYVER="$(python3 -c 'import sys; print(f\"{sys.version_info.major}.{sys.version_info.minor}\")')"
+
+          PYVER="$(python3 -c 'import sys; print(".".join(map(str, sys.version_info[:2])))')"
+
+          # Try creating a temporary venv; if it fails, venv is missing
           if ! python3 -m venv /tmp/_venv_test 2>/dev/null; then
-            echo "python3-venv for Python ${PYVER} is missing."
-            echo "Install on the runner host (once): sudo apt-get update -y && sudo apt-get install -y python3.${PYVER##*.}-venv python3-pip"
+            echo "❌ python3-venv for Python ${PYVER} is missing on the runner."
+            echo "👉 Install on the host (once):"
+            echo "   sudo apt-get update -y && sudo apt-get install -y python3-pip python${PYVER}-venv"
+            # Fallback hint for distros that use generic package name:
+            echo "   (If the above fails, try: sudo apt-get install -y python3-venv)"
             exit 1
           fi
           rm -rf /tmp/_venv_test
 
-      # 🔧 CHANGED: Use venv + python -m pip; guard requirements.txt
-      - name: Set up venv + deps
+      - name: Set up venv + install deps
         run: |
           python3 -m venv .venv
-          source .venv/bin/activate
+          . .venv/bin/activate
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: Build
         run: |
-          source .venv/bin/activate
+          . .venv/bin/activate
           if [ -f pyproject.toml ]; then
             pip install build
             python -m build
           else
-            echo "No Python package build; skipping."
+            echo "No pyproject.toml found; skipping build step."
           fi
 
   test:
@@ -73,18 +79,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # 🔧 CHANGED: Use venv + python -m pip; include pytest install
-      - name: Install test deps
+      - name: Set up venv + test deps
         run: |
           python3 -m venv .venv
-          source .venv/bin/activate
+          . .venv/bin/activate
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
           pip install pytest
 
       - name: Pytest
         run: |
-          source .venv/bin/activate
+          . .venv/bin/activate
           pytest -q
 
   lint:
@@ -94,17 +99,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # 🔧 CHANGED: Use venv + python -m pip; install flake8 then run
       - name: Set up venv + flake8
         run: |
           python3 -m venv .venv
-          source .venv/bin/activate
+          . .venv/bin/activate
           python -m pip install --upgrade pip
           pip install flake8
 
       - name: Run flake8
         run: |
-          source .venv/bin/activate
+          . .venv/bin/activate
           flake8 .
 
   docker:
