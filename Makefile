@@ -9,14 +9,6 @@ REGISTRY = docker.io/vikashkumardev1996
 
 
 
-
-
-
-
-
-
-
-
 #-------Config--------
 DB_IMAGE        := postgres:15
 DB_CONTAINER    := rest_api_db
@@ -27,14 +19,6 @@ DB_PORT         := 5432
 DB_HOST         := $(DB_CONTAINER)
 DB_VOLUME       := pgdata_rest
 DB_NETWORK      := rest_net
-
-
-
-
-
-
-
-
 
 
 
@@ -54,24 +38,8 @@ DML_SQL    := db/dml.sql
 
 
 
-
-
-
-
-
-
-
-
 # Connection strings
 DATABASE_URL := postgresql://$(DB_USER):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)
-
-
-
-
-
-
-
-
 
 
 
@@ -112,9 +80,25 @@ build:
 
 
 
+
+
+
+
+
+
+
+
 # =========================
 # 2) Start PostgreSQL DB
 # =========================
+
+
+
+
+
+
+
+
 
 
 
@@ -157,7 +141,5 @@ db-start:
 # Wait for DB to be ready
 db-wait:
 	@echo "==> Waiting for Postgres to be ready..."
-	@for i in $$(seq 1 30); do \
-
 
 
