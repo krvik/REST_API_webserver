@@ -1,0 +1,14 @@
+name: Simple CI Pipeline
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  docker-test:
+    runs-on: [self-hosted, linux, x64]
+    steps:
+      - name: Check Docker
+        run: |
+          docker version
+          docker run hello-world
