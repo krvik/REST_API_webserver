@@ -6,28 +6,53 @@ on:
 
 jobs:
   lint:
-    runs-on: self-hosted
-    container:
-      image: python:3.10-slim   # exact version you want
+    name: Lint Code
+#    runs-on: ubuntu-latest
+    runs-on: [self-hosted]
     steps:
       - uses: actions/checkout@v4
-      - run: |
-          python -V
-          python -m pip install --upgrade pip
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
           pip install -r requirements.txt
           pip install flake8
-      - run: flake8 .
+
+      - name: Run linting
+        run: flake8 .
 
   tests:
-    runs-on: self-hosted
-    container:
-      image: python:3.10-slim
+    name: Run Tests
+    runs-on: [self-hosted] #ubuntu-latest
     needs: lint
+
     steps:
       - uses: actions/checkout@v4
-      - run: |
-          python -V
-          python -m pip install -r requirements.txt
-          pip install pytest
-      - run: pytest -q
 
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest
+
+      - name: Run tests
+        run: pytest
+
+  build:
+    name: Build API Image
+    runs-on: [self-hosted] #ubuntu-latest
+    needs: tests
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build API Docker image using Makefile
+        run: make build
