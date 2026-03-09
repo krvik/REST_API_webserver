@@ -1,29 +1,45 @@
-name: Self Hosted CI  #name of workflow
+name: Self Hosted CI  # name of workflow
 
 on:
   push:
-    paths: ['REST_API_webserver/**']          # Run only when something under code/ changes
+    paths: ['REST_API_webserver/**']   # (unchanged) triggers only when something under REST_API_webserver changes
   pull_request:
-    paths: ['REST_API_webserver/**']
+    paths: ['REST_API_webserver/**']   # (unchanged)
+  workflow_dispatch:                   #  ADDED: manual trigger to avoid idle when no path change
 
 jobs:
+  ping:
+    name: Ping self-hosted runner
+    runs-on: self-hosted               #  CHANGED: loosen labels to guarantee a match while debugging
+    steps:
+      - run: |
+          echo "OS=${RUNNER_OS} ARCH=${RUNNER_ARCH}"
+          echo "PATH=$PATH"
+          which python || true
+          python -V || true
+
   build:
     name: Build API
-    runs-on: [self-hosted, linux, x64]
+    runs-on: self-hosted               #  CHANGED: loosened from [self-hosted, linux, x64]
+    needs: ping                        #  ADDED: ensure runner picks up at least one job before main jobs
     steps:
       - uses: actions/checkout@v4
 
       # Install deps (adjust if you don't use Python)
-      - name: Install deps
-        working-directory: code
+      - name: Set up venv + install deps
+        working-directory: REST_API_webserver   #  CHANGED: fixed from 'code' to match your path filter
         run: |
+          python3 -V
+          python3 -m venv .venv
+          source .venv/bin/activate
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       # Do your app build here (simple example shown)
       - name: Build
-        working-directory: code
+        working-directory: REST_API_webserver   #  CHANGED: fixed from 'code'
         run: |
+          source .venv/bin/activate
           if [ -f pyproject.toml ]; then
             pip install build
             python -m build
@@ -33,38 +49,50 @@ jobs:
 
   test:
     name: Run tests
-    runs-on: [self-hosted, linux, x64]
+    runs-on: self-hosted               #  CHANGED: loosened from [self-hosted, linux, x64]
     needs: build
     steps:
       - uses: actions/checkout@v4
+
       - name: Install test deps
-        working-directory: code
+        working-directory: REST_API_webserver   #  CHANGED: fixed from 'code'
         run: |
+          python3 -m venv .venv
+          source .venv/bin/activate
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
           pip install pytest
+
       - name: Pytest
-        working-directory: code
-        run: pytest -q
+        working-directory: REST_API_webserver   #  CHANGED: fixed from 'code'
+        run: |
+          source .venv/bin/activate
+          pytest -q
 
   lint:
     name: Lint code
-    runs-on: [self-hosted, linux, x64]
+    runs-on: self-hosted               #  CHANGED: loosened from [self-hosted, linux, x64]
     needs: build
     steps:
       - uses: actions/checkout@v4
+
       - name: Install flake8
-        working-directory: code
+        working-directory: REST_API_webserver   #  CHANGED: fixed from 'code'
         run: |
+          python3 -m venv .venv
+          source .venv/bin/activate
           python -m pip install --upgrade pip
           pip install flake8
+
       - name: flake8
-        working-directory: code
-        run: flake8 .
+        working-directory: REST_API_webserver   # 'CHANGED: fixed from 'code'
+        run: |
+          source .venv/bin/activate
+          flake8 .
 
   docker:
     name: Docker login, build & push
-    runs-on: [self-hosted, linux, x64]
+    runs-on: self-hosted               #  CHANGED: loosened from [self-hosted, linux, x64]
     needs: [test, lint]
     # Push only on main (not on PRs); change if you want different behavior
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
@@ -79,5 +107,5 @@ jobs:
       - name: Build & push image
         run: |
           IMAGE="${{ github.repository }}:latest"      # e.g., owner/repo:latest
-          docker build -t "$IMAGE" ./code
+          docker build -t "$IMAGE" ./REST_API_webserver   #  CHANGED: build context from ./code to ./REST_API_webserver
           docker push "$IMAGE"
