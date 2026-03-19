@@ -1,18 +1,27 @@
-version: "3.9"
 
 services:
-  api:
-    container_name: rest_api_server
+  api1:
+    container_name: rest_api_server_1
     build: .
     ports:
-      - "5000:5000"
+      - "5001:5000"
     environment:
-      DATABASE_URL: postgresql://postgres:postgres@db:5432/students_db
+      DATABASE_URL: "postgresql://postgres:postgres@db:5432/students_db"
       FLASK_ENV: development
     depends_on:
       - db
 
 
+  api2:
+    container_name: rest_api_server_2
+    build: .
+    ports:
+      - "5002:5000"
+    environment:
+      DATABASE_URL: "postgresql://postgres:postgres@db:5432/students_db"
+      FLASK_ENV: development
+    depends_on:
+      - db
   
   db:
       image: postgres:15
@@ -26,6 +35,19 @@ services:
         - "5432:5432"
       volumes:
         - pgdata:/var/lib/postgresql/data
+
+
+
+  nginx:
+    image: nginx:latest
+    container_name: rest_api_nginx
+    ports:
+      - "8080:8080"
+    depends_on:
+      - api1
+      - api2
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
 
 
 volumes:

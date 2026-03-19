@@ -1,0 +1,105 @@
+name: Self Hosted CI - Ex5
+
+defaults:
+  run:
+    shell: bash
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+  build:
+    name: Build API
+    runs-on: self-hosted
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up venv + install dependencies
+        run: |
+          python3 -m venv .venv
+          . .venv/bin/activate
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+  test:
+    name: Run tests
+    runs-on: self-hosted
+    needs: build
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up venv + install test deps
+        run: |
+          python3 -m venv .venv
+          . .venv/bin/activate
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest
+
+      - name: Pytest
+        run: |
+          . .venv/bin/activate
+          pytest -q
+
+  lint:
+    name: Lint code
+    runs-on: self-hosted
+    needs: build
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up venv + install flake8
+        run: |
+          python3 -m venv .venv
+          . .venv/bin/activate
+          python -m pip install --upgrade pip
+          pip install flake8
+
+      - name: Run flake8
+        run: |
+          . .venv/bin/activate
+          flake8 . --exclude=.venv --max-line-length=120
+          
+  docker:
+    name: Docker login, build & push
+    runs-on: self-hosted
+    needs: [test, lint]
+
+    if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Docker login
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Build & push image
+        run: |
+          IMAGE="${{ secrets.DOCKER_USERNAME }}/rest_api_webserver:latest"
+          docker build -t "$IMAGE" .
+          docker push "$IMAGE"
+  deploy:
+    name: Deploy using Docker Compose
+    runs-on: self-hosted
+    needs: docker   # only run after docker image build & push job
+
+    if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Docker login
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Start containers using Docker Compose
+        run: |
+          docker compose down
+          docker compose pull        # pulls latest image from DockerHub
+          docker compose up -d --build
+    
