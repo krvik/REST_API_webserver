@@ -146,3 +146,8 @@ docker run --rm -p 5000:5000 --env-file .env myimage:latest     # run this way
 
 # to run docker-compose
 sudo docker-compose up --build   #sudo is not necessary
+
+# how to access APPI in containerized ngnix, webserver app and DB:
+- curl http://IP-of-runner:8080/health
+- curl http://IP-of-runner:8080/api/v1/students
+- curl http://IP-of-runner:8080/api/v2/students
