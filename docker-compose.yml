@@ -42,7 +42,7 @@ services:
     image: nginx:latest
     container_name: rest_api_nginx
     ports:
-      - "8080:8080"
+      - "8080:80"
     depends_on:
       - api1
       - api2
