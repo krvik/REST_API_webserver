@@ -66,7 +66,7 @@ jobs:
         run: |
           . .venv/bin/activate
           flake8 . --exclude=.venv --max-line-length=120
-
+          
   docker:
     name: Docker login, build & push
     runs-on: self-hosted
@@ -86,3 +86,25 @@ jobs:
           IMAGE="${{ secrets.DOCKER_USERNAME }}/rest_api_webserver:latest"
           docker build -t "$IMAGE" .
           docker push "$IMAGE"
+
+
+ deploy:
+    name: Deploy using Docker Compose
+    runs-on: self-hosted
+    needs: docker   # only run after docker image build & push job
+
+    if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Docker login
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Start containers using Docker Compose
+        run: |
+          docker compose down
+          docker compose pull        # pulls latest image from DockerHub
+          docker compose up -d --build
+    
