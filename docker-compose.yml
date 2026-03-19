@@ -34,30 +34,6 @@ services:
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   api2:
     container_name: rest_api_server_2
     build: .
@@ -115,24 +91,8 @@ services:
 
 
 
-
-
-
-
-
-
-
-
 volumes:
   pgdata:
-
-
-
-
-
-
-
-
 
 
 
