@@ -6,7 +6,7 @@ services:
     ports:
       - "5001:5000"
     environment:
-      DATABASE_URL: "[Credentials]"
+      DATABASE_URL: "postgresql://postgres:postgres@db:5432/students_db"
       FLASK_ENV: development
     depends_on:
       - db
@@ -29,7 +29,7 @@ services:
       restart: always
       environment:
         POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: "postgresql://postgres:postgres@db:5432/students_db"
+        POSTGRES_PASSWORD: postgres
         POSTGRES_DB: students_db
       ports:
         - "5432:5432"
@@ -38,7 +38,7 @@ services:
 
 
 
-   nginx:
+  nginx:
     image: nginx:latest
     container_name: rest_api_nginx
     ports:
@@ -48,8 +48,6 @@ services:
       - api2
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-
-
 
 
 volumes:
