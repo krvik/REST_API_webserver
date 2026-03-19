@@ -149,5 +149,5 @@ sudo docker-compose up --build   #sudo is not necessary
 
 # how to access API in containerized ngnix, webserver app and DB:
 - curl http://IP-of-runner:8080/health
-- curl http://IP-of-runner:8080/api/v1/students
-- curl http://IP-of-runner:8080/api/v2/students
+- curl http://IP-of-runner:8080/api/v1/students/
+- curl http://IP-of-runner:8080/api/v2/students/
