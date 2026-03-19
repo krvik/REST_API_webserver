@@ -86,9 +86,7 @@ jobs:
           IMAGE="${{ secrets.DOCKER_USERNAME }}/rest_api_webserver:latest"
           docker build -t "$IMAGE" .
           docker push "$IMAGE"
-
-
- deploy:
+  deploy:
     name: Deploy using Docker Compose
     runs-on: self-hosted
     needs: docker   # only run after docker image build & push job
