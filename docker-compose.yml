@@ -15,6 +15,118 @@ version: "3.9"
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 services:
   api1:
     container_name: rest_api_server_1
@@ -22,10 +134,66 @@ services:
     ports:
       - "5001:5000"
     environment:
-      DATABASE_URL: [Credentials]
+      DATABASE_URL: "[Credentials]"
       FLASK_ENV: development
     depends_on:
       - db
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -40,7 +208,7 @@ services:
     ports:
       - "5002:5000"
     environment:
-      DATABASE_URL: [Credentials]
+      DATABASE_URL: "[Credentials]"
       FLASK_ENV: development
     depends_on:
       - db
@@ -57,62 +225,4 @@ services:
         - "5432:5432"
       volumes:
         - pgdata:/var/lib/postgresql/data
-
-
-
-
-
-
-
-
-  nginx:
-    image: nginx:latest
-    container_name: rest_api_nginx
-    ports:
-      - "8080:8080"
-    depends_on:
-      - api1
-      - api2
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-volumes:
-  pgdata:
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
